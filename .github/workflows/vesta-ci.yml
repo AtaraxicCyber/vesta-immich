@@ -1,0 +1,88 @@
+name: Vesta CI
+
+# Upstream's build-mobile.yml / static_analysis.yml assume Immich's own
+# self-hosted "mich" runner and their PUSH_O_MATIC GitHub App token, neither
+# of which this fork has. This is a minimal, secrets-free workflow scoped to
+# our fork: unsigned debug builds on GitHub-hosted runners only, so it works
+# out of the box on a public repo with no signing keys or Apple/Google
+# credentials configured yet.
+
+on:
+  push:
+    branches: [phase1-app-pairing, main]
+    paths: ['mobile/**', '.github/workflows/vesta-ci.yml']
+  pull_request:
+    paths: ['mobile/**', '.github/workflows/vesta-ci.yml']
+  workflow_dispatch:
+
+concurrency:
+  group: vesta-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  android:
+    name: Analyze + build Android (debug, unsigned)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./mobile
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: jdx/mise-action@v2
+        with:
+          working_directory: mobile
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v4
+        with:
+          packages: ''
+
+      - name: Install dependencies
+        run: mise run install:ci
+
+      - name: Perform codegen
+        run: mise run codegen
+
+      - name: Analyze
+        run: dart analyze --fatal-infos
+
+      - name: Build debug APK
+        run: flutter build apk --debug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: vesta-debug-apk
+          path: mobile/build/app/outputs/flutter-apk/app-debug.apk
+
+  ios-compile-check:
+    name: iOS compile check (no codesign)
+    runs-on: macos-latest
+    defaults:
+      run:
+        working-directory: ./mobile
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: jdx/mise-action@v2
+        with:
+          working_directory: mobile
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install dependencies
+        run: mise run install:ci
+
+      - name: Perform codegen
+        run: mise run codegen
+
+      # No Apple account, certificate, or provisioning profile exists for
+      # this fork yet (enrollment in progress) -- this only proves the Dart
+      # and Runner targets still compile for iOS, not a signed or
+      # installable build.
+      - name: Build iOS (no codesign)
+        run: flutter build ios --no-codesign --debug
