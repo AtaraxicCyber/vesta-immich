@@ -19,6 +19,14 @@
   <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
   <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
   <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+  <uses-permission android:name="android.permission.CAMERA" />
+
+  <!-- Vesta pairing: join the unit's temporary setup AP via WifiNetworkSpecifier
+       (API 29+). This API is deliberately location-permission-free: it scopes
+       the request to a network we already know the SSID/password for, unlike
+       WifiNetworkSuggestion or a manual scan. -->
+  <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+  <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
 
   <!-- Foreground service permission -->
   <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />

@@ -32,35 +32,48 @@ class LoginPage extends HookWidget {
       bottomNavigationBar: SafeArea(
         child: Padding(
           padding: const EdgeInsets.only(bottom: 16.0),
-          child: SizedBox(
-            height: 50,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'v${appVersion.value}',
-                  style: TextStyle(
-                    color: context.colorScheme.onSurfaceSecondary,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: "GoogleSansCode",
-                  ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              GestureDetector(
+                onTap: () => unawaited(context.pushRoute(const PairingWelcomeRoute())),
+                child: Text(
+                  'Set up a new Vesta Vault',
+                  style: TextStyle(color: context.primaryColor, fontWeight: FontWeight.bold),
                 ),
-                const Text(' '),
-                GestureDetector(
-                  child: Text(
-                    'Logs',
-                    style: TextStyle(
-                      color: context.primaryColor,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: "GoogleSansCode",
+              ),
+              const SizedBox(height: 8),
+              SizedBox(
+                height: 50,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'v${appVersion.value}',
+                      style: TextStyle(
+                        color: context.colorScheme.onSurfaceSecondary,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: "GoogleSansCode",
+                      ),
                     ),
-                  ),
-                  onTap: () {
-                    unawaited(context.pushRoute(const AppLogRoute()));
-                  },
+                    const Text(' '),
+                    GestureDetector(
+                      child: Text(
+                        'Logs',
+                        style: TextStyle(
+                          color: context.primaryColor,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: "GoogleSansCode",
+                        ),
+                      ),
+                      onTap: () {
+                        unawaited(context.pushRoute(const AppLogRoute()));
+                      },
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
