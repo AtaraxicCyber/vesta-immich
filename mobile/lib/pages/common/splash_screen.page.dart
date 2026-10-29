@@ -5,6 +5,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:immich_mobile/constants/constants.dart';
 import 'package:immich_mobile/constants/locales.dart';
 import 'package:immich_mobile/data/db/main/database.dart';
 import 'package:immich_mobile/domain/models/config/app_config.dart';
@@ -158,18 +159,11 @@ class _BottomPanelState extends State<_BottomPanel> {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            _ActionLink(
-              icon: Icons.chat_bubble_outline,
-              label: context.t.discord,
-              onTap: () => launchUrl(Uri.parse('https://discord.immich.app/'), mode: LaunchMode.externalApplication),
-            ),
+            // Vesta: support goes to Vesta, not the upstream Immich community.
             _ActionLink(
               icon: Icons.bug_report_outlined,
-              label: context.t.profile_drawer_github,
-              onTap: () => launchUrl(
-                Uri.parse('https://github.com/immich-app/immich/issues'),
-                mode: LaunchMode.externalApplication,
-              ),
+              label: context.t.report_an_issue,
+              onTap: () => launchUrl(Uri.parse('$kVestaSourceCode/issues'), mode: LaunchMode.externalApplication),
             ),
             if (!_cleared)
               _ActionLink(

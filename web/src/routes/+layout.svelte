@@ -41,6 +41,7 @@
   import { t } from 'svelte-i18n';
   import { get } from 'svelte/store';
   import '../app.css';
+  import { applyVestaBrand } from '$lib/vesta-brand';
 
   interface Props {
     children?: Snippet;
@@ -168,6 +169,7 @@
   let showNavigationLoadingBar = $state(false);
 
   toastManager.setOptions({ class: 'top-16 fixed' });
+  applyVestaBrand();
 
   onMount(() => {
     const element = document.querySelector('#stencil');
@@ -235,7 +237,7 @@
 <VersionAnnouncement />
 
 <svelte:head>
-  <title>{page.data.meta?.title || 'Web'} - Immich</title>
+  <title>{page.data.meta?.title || 'Web'} - Vesta Cloud</title>
   <link rel="manifest" href="/manifest.json" crossorigin="use-credentials" />
   <meta name="theme-color" content="white" media="(prefers-color-scheme: light)" />
   <meta name="theme-color" content="black" media="(prefers-color-scheme: dark)" />

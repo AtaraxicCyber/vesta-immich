@@ -70,15 +70,47 @@
   grid-template-columns: repeat(auto-fill, minmax(min(calc(var(--spacing) * --value(number)), 100%), 1fr));
 }
 
+/* Vesta: brand palette, replacing @immich/ui's indigo primary (light 500 = #d65400, dark 500 = #f07328). */
+@layer base {
+  :root,
+  .light {
+    --immich-ui-primary-50: oklch(0.962 0.02 47);
+    --immich-ui-primary-100: oklch(0.915 0.047 47);
+    --immich-ui-primary-200: oklch(0.85 0.088 47);
+    --immich-ui-primary-300: oklch(0.78 0.138 47);
+    --immich-ui-primary-400: oklch(0.7 0.184 47);
+    --immich-ui-primary-500: #d65400;
+    --immich-ui-primary-600: oklch(0.53 0.146 47);
+    --immich-ui-primary-700: oklch(0.45 0.124 47);
+    --immich-ui-primary-800: oklch(0.37 0.1 47);
+    --immich-ui-primary-900: oklch(0.29 0.079 47);
+    --immich-ui-primary-950: oklch(0.21 0.057 47);
+  }
+
+  .dark {
+    --immich-ui-primary-50: oklch(0.2 0.054 47);
+    --immich-ui-primary-100: oklch(0.26 0.071 47);
+    --immich-ui-primary-200: oklch(0.34 0.093 47);
+    --immich-ui-primary-300: oklch(0.42 0.114 47);
+    --immich-ui-primary-400: oklch(0.52 0.142 47);
+    --immich-ui-primary-500: #f07328;
+    --immich-ui-primary-600: oklch(0.82 0.108 47);
+    --immich-ui-primary-700: oklch(0.87 0.076 47);
+    --immich-ui-primary-800: oklch(0.915 0.047 47);
+    --immich-ui-primary-900: oklch(0.955 0.024 47);
+    --immich-ui-primary-950: oklch(0.978 0.011 47);
+  }
+}
+
 @layer base {
   :root {
     /* light */
-    --immich-primary: 66 80 175;
+    --immich-primary: 214 84 0; /* Vesta #d65400 */
     --immich-bg: 255 255 255;
     --immich-fg: 0 0 0;
 
     /* dark */
-    --immich-dark-primary: 172 203 250;
+    --immich-dark-primary: 240 115 40; /* Vesta #f07328 */
     --immich-dark-bg: 10 10 10;
     --immich-dark-fg: 229 231 235;
     --immich-dark-gray: 33 33 33;

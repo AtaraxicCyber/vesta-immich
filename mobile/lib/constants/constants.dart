@@ -43,8 +43,11 @@ const List<(String, String)> kWidgetNames = [
 const int kMinMonthsToEnableScrubberSnap = 12;
 
 const String kImmichAppStoreLink = "https://apps.apple.com/app/immich/id1613945652";
-const String kImmichPlayStoreLink = "https://play.google.com/store/apps/details?id=app.alextran.immich";
+const String kImmichPlayStoreLink = "https://play.google.com/store/apps/details?id=com.vestavault.app";
 const String kImmichLatestRelease = "https://github.com/immich-app/immich/releases/latest";
+
+// AGPL-3.0 §13: users interacting with this modified app must be offered its source.
+const String kVestaSourceCode = "https://github.com/AtaraxicCyber/vesta-immich";
 
 const int kPhotoTabIndex = 0;
 const int kSearchTabIndex = 1;
