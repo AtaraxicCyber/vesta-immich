@@ -20,6 +20,9 @@ env:
 
 jobs:
   pre-job:
+    # Vesta: upstream's image pipeline only works in immich-app (registry names, Docker Hub,
+    # secrets). Forks skip it; vesta-docker.yml builds the Vesta server image instead.
+    if: ${{ github.repository_owner == 'immich-app' }}
     runs-on: ubuntu-latest
     permissions:
       contents: read

@@ -85,7 +85,8 @@ jobs:
       contents: read
       pull-requests: write
     if: ${{ github.actor != 'dependabot[bot]' && fromJSON(needs.pre-job.outputs.should_run).mobile == true }}
-    runs-on: mich
+    # Vesta: was `mich` (upstream's self-hosted runner). Without signing secrets the APK is debug-signed.
+    runs-on: ubuntu-latest
 
     steps:
       - id: token
@@ -165,7 +166,8 @@ jobs:
           path: mobile/build/app/outputs/flutter-apk/*.apk
 
       - name: Comment APK download link on PR
-        if: ${{ github.event_name == 'pull_request' && !github.event.pull_request.head.repo.fork }}
+        # Vesta: also needs the workflow token, which requires upstream's app secrets
+        if: ${{ github.event_name == 'pull_request' && !github.event.pull_request.head.repo.fork && steps.token.outputs.token != '' }}
         uses: immich-app/devtools/actions/sticky-comment@0135acd12ad9f3369b94a2aa3c0ae8c835a4e926 # sticky-comment-action-v1.0.0
         env:
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}

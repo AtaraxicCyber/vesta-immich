@@ -8,6 +8,8 @@ permissions: {}
 
 jobs:
   validate-release-label:
+    # Vesta: upstream release-notes process; the fork has no changelog:* labels.
+    if: ${{ github.repository_owner == 'immich-app' }}
     runs-on: ubuntu-latest
     permissions:
       issues: write
