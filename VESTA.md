@@ -69,14 +69,14 @@ Upstream workflows assume Immich's own infrastructure. Each fork change is marke
 with a `Vesta:` comment in the workflow file. Keep those comments when merging
 upstream.
 
-| Workflow                     | Change                                                                                                                                                                  |
-| ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `docker.yml`                 | Skipped outside `immich-app`. Its image names can't handle an uppercase owner, and it pushes to Immich's registries                                                     |
-| `vesta-docker.yml` (new)     | Builds `ghcr.io/<owner, lowercased>/vesta-server` from `server/Dockerfile`: build-only on PRs, pushed on `vesta/main`                                                   |
-| `test.yml` (Lint Web)        | `ubuntu-latest` instead of upstream's self-hosted `mich` runner, with an 8 GB Node heap for ESLint                                                                      |
-| `build-mobile.yml` (Android) | `ubuntu-latest` instead of `mich`. The APK is debug-signed until Vesta signing secrets (`KEY_JKS`, `ALIAS`, `ANDROID_KEY_PASSWORD`, `ANDROID_STORE_PASSWORD`) are added |
-| `static_analysis.yml`        | Plain `dart analyze --fatal-infos`. Upstream's DCM linter needs a paid licence                                                                                          |
-| `pr-label-validation.yml`    | Skipped outside `immich-app`. The `changelog:*` labels are upstream's release process                                                                                   |
+| Workflow                     | Change                                                                                                                                                                                                                                                                             |
+| ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `docker.yml`                 | Skipped outside `immich-app`. Its image names can't handle an uppercase owner, and it pushes to Immich's registries                                                                                                                                                                |
+| `vesta-docker.yml` (new)     | Builds `ghcr.io/<owner, lowercased>/vesta-server` from `server/Dockerfile`: build-only on PRs, pushed on `vesta/main`                                                                                                                                                              |
+| `test.yml` (Lint Web)        | `ubuntu-latest` instead of upstream's self-hosted `mich` runner, with an 8 GB Node heap for ESLint                                                                                                                                                                                 |
+| `build-mobile.yml` (Android) | `ubuntu-latest` instead of `mich`. Gradle heap raised to 8 GB via `~/.gradle/gradle.properties` (upstream's 4 GB runs out on hosted runners). The APK is debug-signed until Vesta signing secrets (`KEY_JKS`, `ALIAS`, `ANDROID_KEY_PASSWORD`, `ANDROID_STORE_PASSWORD`) are added |
+| `static_analysis.yml`        | Plain `dart analyze --fatal-infos`. Upstream's DCM linter needs a paid licence                                                                                                                                                                                                     |
+| `pr-label-validation.yml`    | Skipped outside `immich-app`. The `changelog:*` labels are upstream's release process                                                                                                                                                                                              |
 
 Upstream fixes ported early, so drop them when the upstream version arrives in a
 sync:
