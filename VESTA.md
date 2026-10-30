@@ -78,6 +78,19 @@ upstream.
 | `static_analysis.yml`        | Plain `dart analyze --fatal-infos`. Upstream's DCM linter needs a paid licence                                                                                          |
 | `pr-label-validation.yml`    | Skipped outside `immich-app`. The `changelog:*` labels are upstream's release process                                                                                   |
 
+### Drive tab (`vesta/drive-tab`)
+
+A fifth bottom tab, **Drive**, browses the family's shared files. Drive is a
+WebDAV share at `<family server>/drive/`, and it accepts the same login token as
+the photos server. For now it only browses; opening, uploading and offline use
+come later.
+
+- Code: `mobile/lib/vesta/drive/`. The route in `mobile/lib/routing/router.dart`,
+  the tab in `mobile/lib/pages/common/tab_shell.page.dart` and `TabEnum.drive`
+  are marked `Vesta:` where they touch upstream files.
+- Dependency: `xml` (already a transitive dependency) is now a direct one.
+- Strings: `drive`, `drive_load_failed`.
+
 Upstream fixes ported early, so drop them when the upstream version arrives in a
 sync:
 

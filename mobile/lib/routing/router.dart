@@ -79,6 +79,7 @@ import 'package:immich_mobile/services/api.service.dart';
 import 'package:immich_mobile/services/auth.service.dart';
 import 'package:immich_mobile/services/local_auth.service.dart';
 import 'package:immich_mobile/services/secure_storage.service.dart';
+import 'package:immich_mobile/vesta/drive/drive.page.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 
 part 'router.gr.dart';
@@ -126,6 +127,8 @@ class AppRouter extends RootStackRouter {
         AutoRoute(page: SearchRoute.page, guards: [_authGuard, _duplicateGuard], maintainState: false),
         AutoRoute(page: LibraryRoute.page, guards: [_authGuard, _duplicateGuard]),
         AutoRoute(page: AlbumsRoute.page, guards: [_authGuard, _duplicateGuard]),
+        // Vesta: Drive tab
+        AutoRoute(page: DriveRoute.page, guards: [_authGuard, _duplicateGuard]),
       ],
     ),
     AutoRoute(page: ProfilePictureCropRoute.page),
