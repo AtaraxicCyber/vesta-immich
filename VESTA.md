@@ -15,11 +15,11 @@ house-and-flame mark replace them everywhere users see them.
 
 ## Branches
 
-| Branch | Purpose |
-| --- | --- |
-| `main` | Untouched mirror of upstream `immich-app/immich` |
-| `vesta/main` | Default branch. Vesta work, based on upstream tag `v3.3.5` |
-| `vesta/<feature>` | Feature branches, merged into `vesta/main` by PR |
+| Branch                       | Purpose                                                                  |
+| ---------------------------- | ------------------------------------------------------------------------ |
+| `main`                       | Untouched mirror of upstream `immich-app/immich`                         |
+| `vesta/main`                 | Default branch. Vesta work, based on upstream tag `v3.3.5`               |
+| `vesta/<feature>`            | Feature branches, merged into `vesta/main` by PR                         |
 | `archive/phase1-app-pairing` | Earlier Vesta Vault QR/WiFi pairing work (Sept 2026), kept for reference |
 
 Upstream sync: merge the next stable upstream tag into a `sync/vX.Y.Z` branch,
@@ -62,6 +62,27 @@ files is untouched.
 - **Links:** the mobile "GitHub" link is relabelled "Source code" and points at
   this repository. The mobile crash screen sends bug reports to this
   repository's issues instead of Immich's Discord and GitHub.
+
+### CI (`vesta/fork-ci`)
+
+Upstream workflows assume Immich's own infrastructure. Each fork change is marked
+with a `Vesta:` comment in the workflow file. Keep those comments when merging
+upstream.
+
+| Workflow                     | Change                                                                                                                                                                  |
+| ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `docker.yml`                 | Skipped outside `immich-app`. Its image names can't handle an uppercase owner, and it pushes to Immich's registries                                                     |
+| `vesta-docker.yml` (new)     | Builds `ghcr.io/<owner, lowercased>/vesta-server` from `server/Dockerfile`: build-only on PRs, pushed on `vesta/main`                                                   |
+| `test.yml` (Lint Web)        | `ubuntu-latest` instead of upstream's self-hosted `mich` runner, with an 8 GB Node heap for ESLint                                                                      |
+| `build-mobile.yml` (Android) | `ubuntu-latest` instead of `mich`. The APK is debug-signed until Vesta signing secrets (`KEY_JKS`, `ALIAS`, `ANDROID_KEY_PASSWORD`, `ANDROID_STORE_PASSWORD`) are added |
+| `static_analysis.yml`        | Plain `dart analyze --fatal-infos`. Upstream's DCM linter needs a paid licence                                                                                          |
+| `pr-label-validation.yml`    | Skipped outside `immich-app`. The `changelog:*` labels are upstream's release process                                                                                   |
+
+Upstream fixes ported early, so drop them when the upstream version arrives in a
+sync:
+
+- `server/test/medium/specs/sync/sync-album-user.spec.ts`: order-independent
+  assertion for "should detect and sync a new shared user", from upstream `main`.
 
 ## Known Immich leftovers (to do)
 
