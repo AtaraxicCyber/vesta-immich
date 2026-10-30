@@ -69,16 +69,44 @@ Upstream workflows assume Immich's own infrastructure. Each fork change is marke
 with a `Vesta:` comment in the workflow file. Keep those comments when merging
 upstream.
 
-| Workflow                     | Change                                                                                                                                                                  |
-| ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `docker.yml`                 | Skipped outside `immich-app`. Its image names can't handle an uppercase owner, and it pushes to Immich's registries                                                     |
-| `vesta-docker.yml` (new)     | Builds `ghcr.io/<owner, lowercased>/vesta-server` from `server/Dockerfile`: build-only on PRs, pushed on `vesta/main`                                                   |
-| `test.yml` (Lint Web)        | `ubuntu-latest` instead of upstream's self-hosted `mich` runner, with an 8 GB Node heap for ESLint                                                                      |
-| `build-mobile.yml` (Android) | `ubuntu-latest` instead of `mich`. The APK is debug-signed until Vesta signing secrets (`KEY_JKS`, `ALIAS`, `ANDROID_KEY_PASSWORD`, `ANDROID_STORE_PASSWORD`) are added |
-| `static_analysis.yml`        | Plain `dart analyze --fatal-infos`. Upstream's DCM linter needs a paid licence                                                                                          |
-| `pr-label-validation.yml`    | Skipped outside `immich-app`. The `changelog:*` labels are upstream's release process                                                                                   |
-| `auto-close.yml`             | Skipped outside `immich-app`. It closes PRs from forks that skip upstream's PR template, and this repo is itself a fork, so it closed every PR here                     |
-| `close-duplicates.yml`       | Skipped outside `immich-app`. Upstream's issue triage would close bug reports filed here, e.g. from the app's crash screen                                              |
+| Workflow                     | Change                                                                                                                                                                                                                                                                             |
+| ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `docker.yml`                 | Skipped outside `immich-app`. Its image names can't handle an uppercase owner, and it pushes to Immich's registries                                                                                                                                                                |
+| `vesta-docker.yml` (new)     | Builds `ghcr.io/<owner, lowercased>/vesta-server` from `server/Dockerfile`: build-only on PRs, pushed on `vesta/main`                                                                                                                                                              |
+| `test.yml` (Lint Web)        | `ubuntu-latest` instead of upstream's self-hosted `mich` runner, with an 8 GB Node heap for ESLint                                                                                                                                                                                 |
+| `build-mobile.yml` (Android) | `ubuntu-latest` instead of `mich`. Gradle heap raised to 8 GB via `~/.gradle/gradle.properties` (upstream's 4 GB runs out on hosted runners). The APK is debug-signed until Vesta signing secrets (`KEY_JKS`, `ALIAS`, `ANDROID_KEY_PASSWORD`, `ANDROID_STORE_PASSWORD`) are added |
+| `static_analysis.yml`        | Plain `dart analyze --fatal-infos`. Upstream's DCM linter needs a paid licence                                                                                                                                                                                                     |
+| `pr-label-validation.yml`    | Skipped outside `immich-app`. The `changelog:*` labels are upstream's release process                                                                                                                                                                                              |
+| `auto-close.yml`             | Skipped outside `immich-app`. It closes PRs from forks that skip upstream's PR template, and this repo is itself a fork, so it closed every PR here                                                                                                                                |
+| `close-duplicates.yml`       | Skipped outside `immich-app`. Upstream's issue triage would close bug reports filed here, e.g. from the app's crash screen                                                                                                                                                         |
+
+### Email sign-in (`vesta/discovery-login`)
+
+The mobile login asks for an email first. The app looks up that email's
+family server through Vesta's discovery API, then shows the usual
+password step for that server. "Connect to a server URL" keeps upstream's
+manual server entry, for Vesta Vault appliances and self-hosted servers.
+
+- Code: `mobile/lib/vesta/discovery.service.dart`, plus the email step in
+  `mobile/lib/widgets/forms/login/login_form.dart` (marked `Vesta:`).
+- Endpoint: `https://cloud.vesta-vault.com/api/v1/discover` by default. To
+  point a build at the local sandbox, pass
+  `--dart-define=VESTA_DISCOVERY_URL=http://cloud.<lan-ip>.nip.io/api/v1/discover`.
+- Strings: `login_form_discovery_failed`, `login_form_discovery_not_found`,
+  `login_form_use_email`, `login_form_use_server_url`.
+
+### Drive tab (`vesta/drive-tab`)
+
+A fifth bottom tab, **Drive**, browses the family's shared files. Drive is a
+WebDAV share at `<family server>/drive/`, and it accepts the same login token as
+the photos server. For now it only browses; opening, uploading and offline use
+come later.
+
+- Code: `mobile/lib/vesta/drive/`. The route in `mobile/lib/routing/router.dart`,
+  the tab in `mobile/lib/pages/common/tab_shell.page.dart` and `TabEnum.drive`
+  are marked `Vesta:` where they touch upstream files.
+- Dependency: `xml` (already a transitive dependency) is now a direct one.
+- Strings: `drive`, `drive_load_failed`.
 
 Upstream fixes ported early, so drop them when the upstream version arrives in a
 sync:
