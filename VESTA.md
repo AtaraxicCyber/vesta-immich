@@ -78,6 +78,21 @@ upstream.
 | `static_analysis.yml`        | Plain `dart analyze --fatal-infos`. Upstream's DCM linter needs a paid licence                                                                                                                                                                                                     |
 | `pr-label-validation.yml`    | Skipped outside `immich-app`. The `changelog:*` labels are upstream's release process                                                                                                                                                                                              |
 
+### Email sign-in (`vesta/discovery-login`)
+
+The mobile login asks for an email first. The app looks up that email's
+family server through Vesta's discovery API, then shows the usual
+password step for that server. "Connect to a server URL" keeps upstream's
+manual server entry, for Vesta Vault appliances and self-hosted servers.
+
+- Code: `mobile/lib/vesta/discovery.service.dart`, plus the email step in
+  `mobile/lib/widgets/forms/login/login_form.dart` (marked `Vesta:`).
+- Endpoint: `https://cloud.vesta-vault.com/api/v1/discover` by default. To
+  point a build at the local sandbox, pass
+  `--dart-define=VESTA_DISCOVERY_URL=http://cloud.<lan-ip>.nip.io/api/v1/discover`.
+- Strings: `login_form_discovery_failed`, `login_form_discovery_not_found`,
+  `login_form_use_email`, `login_form_use_server_url`.
+
 Upstream fixes ported early, so drop them when the upstream version arrives in a
 sync:
 
