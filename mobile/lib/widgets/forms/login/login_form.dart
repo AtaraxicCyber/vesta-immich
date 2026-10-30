@@ -29,6 +29,7 @@ import 'package:immich_mobile/utils/provider_utils.dart';
 import 'package:immich_mobile/utils/semver.dart';
 import 'package:immich_mobile/utils/url_helper.dart';
 import 'package:immich_mobile/utils/version_compatibility.dart';
+import 'package:immich_mobile/vesta/discovery.service.dart';
 import 'package:immich_mobile/widgets/common/immich_logo.dart';
 import 'package:immich_mobile/widgets/common/immich_title_text.dart';
 import 'package:immich_mobile/widgets/common/immich_toast.dart';
@@ -61,6 +62,10 @@ class LoginForm extends HookConsumerWidget {
     return null;
   }
 
+  // Vesta: the email step needs an address, unlike the optional email on the password step
+  String? _validateDiscoveryEmail(String? email) =>
+      email == null || email.isEmpty ? StaticTranslations.instance.login_form_err_invalid_email : _validateEmail(email);
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final emailController = useTextEditingController.fromValue(TextEditingValue.empty);
@@ -76,6 +81,8 @@ class LoginForm extends HookConsumerWidget {
     final warningMessage = useState<String?>(null);
     final loginFormKey = GlobalKey<FormState>();
     final ValueNotifier<String?> serverEndpoint = useState<String?>(null);
+    // Vesta: sign in with an email by default; a server URL is only for self-hosted or Vesta Vault servers
+    final useServerUrl = useState<bool>(false);
 
     Future<void> checkVersionMismatch() async {
       try {
@@ -160,6 +167,34 @@ class LoginForm extends HookConsumerWidget {
         isOauthEnable.value = false;
         isPasswordLoginEnable.value = true;
       }
+    }
+
+    /// Vesta: looks up the family server for the email, then continues as if its URL had been entered
+    Future<void> discoverServer() async {
+      try {
+        serverEndpointController.text = await ref.read(vestaDiscoveryServiceProvider).discover(emailController.text);
+      } on VestaDiscoveryException catch (e) {
+        if (!context.mounted) {
+          return;
+        }
+
+        ImmichToast.show(
+          context: context,
+          msg: switch (e.error) {
+            VestaDiscoveryError.notFound => context.t.login_form_discovery_not_found,
+            VestaDiscoveryError.invalidEmail => context.t.login_form_err_invalid_email,
+            VestaDiscoveryError.unavailable => context.t.login_form_discovery_failed,
+          },
+          toastType: ToastType.error,
+          gravity: ToastGravity.TOP,
+        );
+        return;
+      }
+
+      if (!context.mounted) {
+        return;
+      }
+      await getServerAuthSettings();
     }
 
     useEffect(() {
@@ -444,7 +479,43 @@ class LoginForm extends HookConsumerWidget {
       );
     }
 
-    final serverSelectionOrLogin = serverEndpoint.value == null
+    final emailDiscovery = Padding(
+      padding: const EdgeInsets.only(top: ImmichSpacing.md),
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          ImmichForm(
+            onSubmit: discoverServer,
+            submitText: context.t.next,
+            submitIcon: Icons.arrow_forward_rounded,
+            builder: (_, form) => ImmichEmailInput(
+              controller: emailController,
+              label: context.t.email,
+              hintText: context.t.login_form_email_hint,
+              validator: _validateDiscoveryEmail,
+              keyboardAction: .next,
+              onSubmit: (_) => form.submit(),
+            ),
+          ),
+          ImmichTextButton(
+            labelText: context.t.login_form_use_server_url,
+            icon: Icons.dns_outlined,
+            variant: ImmichVariant.ghost,
+            onPressed: () => useServerUrl.value = true,
+          ),
+          ImmichTextButton(
+            labelText: context.t.settings,
+            icon: Icons.settings,
+            variant: ImmichVariant.ghost,
+            onPressed: () => context.pushRoute(const SettingsRoute()),
+          ),
+        ],
+      ),
+    );
+
+    final serverSelectionOrLogin = serverEndpoint.value == null && !useServerUrl.value
+        ? emailDiscovery
+        : serverEndpoint.value == null
         ? Padding(
             padding: const EdgeInsets.only(top: ImmichSpacing.md),
             child: Column(
@@ -462,6 +533,12 @@ class LoginForm extends HookConsumerWidget {
                     keyboardAction: .next,
                     onSubmit: (_) => form.submit(),
                   ),
+                ),
+                ImmichTextButton(
+                  labelText: context.t.login_form_use_email,
+                  icon: Icons.mail_outline_rounded,
+                  variant: ImmichVariant.ghost,
+                  onPressed: () => useServerUrl.value = false,
                 ),
                 ImmichTextButton(
                   labelText: context.t.settings,
