@@ -77,6 +77,8 @@ upstream.
 | `build-mobile.yml` (Android) | `ubuntu-latest` instead of `mich`. The APK is debug-signed until Vesta signing secrets (`KEY_JKS`, `ALIAS`, `ANDROID_KEY_PASSWORD`, `ANDROID_STORE_PASSWORD`) are added |
 | `static_analysis.yml`        | Plain `dart analyze --fatal-infos`. Upstream's DCM linter needs a paid licence                                                                                          |
 | `pr-label-validation.yml`    | Skipped outside `immich-app`. The `changelog:*` labels are upstream's release process                                                                                   |
+| `auto-close.yml`             | Skipped outside `immich-app`. It closes PRs from forks that skip upstream's PR template, and this repo is itself a fork, so it closed every PR here                     |
+| `close-duplicates.yml`       | Skipped outside `immich-app`. Upstream's issue triage would close bug reports filed here, e.g. from the app's crash screen                                              |
 
 Upstream fixes ported early, so drop them when the upstream version arrives in a
 sync:
