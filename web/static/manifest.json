@@ -1,6 +1,6 @@
 {
   "background_color": "#ffffff",
-  "description": "Self-hosted photo and video backup solution directly from your mobile phone.",
+  "description": "Private family photo and file storage.",
   "dir": "auto",
   "display": "standalone",
   "icons": [
@@ -24,8 +24,8 @@
     }
   ],
   "lang": "en",
-  "name": "Immich",
-  "short_name": "Immich",
+  "name": "Vesta Cloud",
+  "short_name": "Vesta Cloud",
   "shortcuts": [
     {
       "name": "Photos",
@@ -40,5 +40,6 @@
       "url": "/map"
     }
   ],
-  "start_url": "/"
+  "start_url": "/",
+  "theme_color": "#d65400"
 }
