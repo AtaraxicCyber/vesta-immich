@@ -920,6 +920,8 @@
   "downloading_from_icloud": "Downloading from iCloud",
   "downloading_media": "Downloading media",
   "drag_to_reorder": "Drag to reorder",
+  "drive": "Drive",
+  "drive_load_failed": "Couldn't load your Drive. Check your connection and try again.",
   "drop_files_to_upload": "Drop files anywhere to upload",
   "duplicate": "Duplicate",
   "duplicate_workflow": "Duplicate workflow",

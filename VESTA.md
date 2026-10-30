@@ -93,6 +93,19 @@ manual server entry, for Vesta Vault appliances and self-hosted servers.
 - Strings: `login_form_discovery_failed`, `login_form_discovery_not_found`,
   `login_form_use_email`, `login_form_use_server_url`.
 
+### Drive tab (`vesta/drive-tab`)
+
+A fifth bottom tab, **Drive**, browses the family's shared files. Drive is a
+WebDAV share at `<family server>/drive/`, and it accepts the same login token as
+the photos server. For now it only browses; opening, uploading and offline use
+come later.
+
+- Code: `mobile/lib/vesta/drive/`. The route in `mobile/lib/routing/router.dart`,
+  the tab in `mobile/lib/pages/common/tab_shell.page.dart` and `TabEnum.drive`
+  are marked `Vesta:` where they touch upstream files.
+- Dependency: `xml` (already a transitive dependency) is now a direct one.
+- Strings: `drive`, `drive_load_failed`.
+
 Upstream fixes ported early, so drop them when the upstream version arrives in a
 sync:
 
