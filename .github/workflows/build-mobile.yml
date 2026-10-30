@@ -137,6 +137,14 @@ jobs:
         with:
           packages: ''
 
+      # Vesta: hosted runners have 16 GB; upstream's 4 GB Gradle heap (mobile/android/gradle.properties)
+      # runs out during the release build's Jetifier transforms. ~/.gradle/gradle.properties takes
+      # precedence over the project file, so the upstream setting stays untouched.
+      - name: Raise Gradle heap
+        run: |
+          mkdir -p ~/.gradle
+          echo 'org.gradle.jvmargs=-Xmx8g -XX:MaxMetaspaceSize=1g' >> ~/.gradle/gradle.properties
+
       - name: Install dependencies
         run: mise //mobile:install:ci
 
