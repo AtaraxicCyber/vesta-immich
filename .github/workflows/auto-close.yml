@@ -9,7 +9,8 @@ permissions: {}
 jobs:
   parse_template:
     runs-on: ubuntu-latest
-    if: ${{ github.event.action != 'labeled' && github.event.pull_request.head.repo.fork == true }}
+    # Vesta: upstream's outside-contributor policy. The fork is itself a fork, so it would close every PR here.
+    if: ${{ github.repository_owner == 'immich-app' && github.event.action != 'labeled' && github.event.pull_request.head.repo.fork == true }}
     permissions:
       contents: read
     outputs:
@@ -75,7 +76,8 @@ jobs:
 
   close_llm:
     runs-on: ubuntu-latest
-    if: ${{ github.event.action == 'labeled' && github.event.label.name == 'auto-closed:llm' }}
+    # Vesta: upstream policy only (see parse_template)
+    if: ${{ github.repository_owner == 'immich-app' && github.event.action == 'labeled' && github.event.label.name == 'auto-closed:llm' }}
     permissions:
       pull-requests: write
     steps:
